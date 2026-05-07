@@ -1,40 +1,43 @@
-const madinaInterface = document.getElementById("madina"),
-manualButton = document.getElementById("manual"),
-lightsButton = document.getElementById("lights"),
-airHornButton = document.getElementById("airhorn"),
-hotKeyButton = document.getElementById("hotkey");
+const madinaInterface = document.getElementById("madina");
+const manualButton = document.getElementById("manual"); // Кнопка 1
+const lightsButton = document.getElementById("lights"); // Кнопка 2
+const airHornButton = document.getElementById("airhorn"); // Кнопка 3
+const hotKeyButton = document.getElementById("hotkey"); // Кнопка 4
 
-function madinaShow(t, n, e, o) {
-        madinaInterface.style = "display: block;";
-        t && (manualButton.style = "background: green; box-shadow: 0px 0px 10px lime;");
-        n && (lightsButton.style = "background: green; box-shadow: 0px 0px 10px lime;");
-        e && (airHornButton.style = "background: green; box-shadow: 0px 0px 10px lime;");
-        o && (hotKeyButton.style = "background: green; box-shadow: 0px 0px 10px lime;");
-}
+// Слушатель клавиш
+document.addEventListener('keydown', (event) => {
+    if (madinaInterface.style.display === "block") {
+        let action = 0;
+        if (event.key === "1") action = 1;
+        if (event.key === "2") action = 2;
+        if (event.key === "3") action = 3;
+        if (event.key === "4") action = 4;
 
-function madinaHide() {
-        madinaInterface.style = "display: none;",
-        manualButton.style = "",
-        lightsButton.style = "",
-        airHornButton.style = "",
-        hotKeyButton.style = ""
-}
+        if (action > 0) {
+            cef.emit("madina-action", action);
+        }
+    }
+});
 
-cef.on("show-madina", (t, n, e, o) => {
-    madinaShow(t, n, e, o);
+// Синхронизация подсветки кнопок с сервером
+cef.on("update-button", (id, state) => {
+    const btnMap = {1: manualButton, 2: lightsButton, 3: airHornButton, 4: hotKeyButton};
+    const btn = btnMap[id];
+    if (btn) {
+        if (state === 1) {
+            btn.style.background = "green";
+            btn.style.boxShadow = "0px 0px 10px lime";
+        } else {
+            btn.style.background = "";
+            btn.style.boxShadow = "";
+        }
+    }
+});
+
+cef.on("show-madina", () => {
+    madinaInterface.style.display = "block";
 });
 
 cef.on("hide-madina", () => {
-    madinaHide()
-});
-document.addEventListener('keydown', (event) => {
-    // Проверяем, что интерфейс виден (display block)
-    if (madinaInterface.style.display === "block") {
-        switch(event.key) {
-            case "1": cef.emit("madina-action", 1); break; // MANUAL
-            case "2": cef.emit("madina-action", 2); break; // LIGHTS
-            case "3": cef.emit("madina-action", 3); break; // AIR-HORN
-            case "4": cef.emit("madina-action", 4); break; // HOTKEY
-        }
-    }
+    madinaInterface.style.display = "none";
 });
