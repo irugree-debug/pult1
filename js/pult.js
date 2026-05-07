@@ -27,3 +27,14 @@ cef.on("show-madina", (t, n, e, o) => {
 cef.on("hide-madina", () => {
     madinaHide()
 });
+document.addEventListener('keydown', (event) => {
+    // Проверяем, что интерфейс виден (display block)
+    if (madinaInterface.style.display === "block") {
+        switch(event.key) {
+            case "1": cef.emit("madina-action", 1); break; // MANUAL
+            case "2": cef.emit("madina-action", 2); break; // LIGHTS
+            case "3": cef.emit("madina-action", 3); break; // AIR-HORN
+            case "4": cef.emit("madina-action", 4); break; // HOTKEY
+        }
+    }
+});
