@@ -41,3 +41,20 @@ cef.on("show-madina", () => {
 cef.on("hide-madina", () => {
     madinaInterface.style.display = "none";
 });
+// Добавляем обработчики событий клика
+manualButton.addEventListener('click', () => {
+    cef.emit("siren:toggleManual"); 
+});
+
+lightsButton.addEventListener('click', () => {
+    cef.emit("siren:toggleLights");
+});
+
+airHornButton.addEventListener('click', () => {
+    cef.emit("siren:airHorn");
+});
+
+hotKeyButton.addEventListener('click', () => {
+    // Например, переключение режима (sirenstate) по кругу
+    cef.emit("siren:nextMode");
+});
